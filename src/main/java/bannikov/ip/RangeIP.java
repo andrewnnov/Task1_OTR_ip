@@ -1,5 +1,7 @@
 package bannikov.ip;
 
+import bannikov.ip.util.ConsoleHelper;
+
 import java.util.List;
 
 public class RangeIP {

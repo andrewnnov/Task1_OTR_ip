@@ -10,8 +10,8 @@ public class IpRangeFinder {
     private static final long OCTET0 = 1 << 24;
     private static final long OCTET1 = 1 << 16;
     private static final long OCTET2 = 1 << 8;
-    String startIpStr;
-    String endIpStr;
+    private String startIpStr;
+    private String endIpStr;
 
     public IpRangeFinder() {
     }
@@ -26,9 +26,9 @@ public class IpRangeFinder {
         try {
             InetAddress firstOfRange= InetAddress.getByName(startIpStr);
             InetAddress endOfRange= InetAddress.getByName(endIpStr);
-            long firstIndex = ipToLong(firstOfRange);
+            long firstIndex = ipToLong(firstOfRange) + 1;
             long endIndex = ipToLong(endOfRange);
-            for (long i = firstIndex + 1; i < endIndex ; i++) {
+            for (long i = firstIndex; i < endIndex ; i++) {
                 listRangeOfIP.add(longToIp(i));
             }
         }catch(UnknownHostException ex) {
@@ -40,36 +40,34 @@ public class IpRangeFinder {
     public long ipToLong(InetAddress inetAddress) {
         byte inetAddressByteAr[] = inetAddress.getAddress();
 
-        int i0 = inetAddressByteAr[0];
-        if (i0 < 0) {
-            i0 += 256;
+        int seg0 = inetAddressByteAr[0];
+        if (seg0 < 0) {
+            seg0 += 256;
         }
-        int i1 = inetAddressByteAr[1];
-        if (i1 < 0) {
-            i1 += 256;
+        int seg1 = inetAddressByteAr[1];
+        if (seg1 < 0) {
+            seg1 += 256;
         }
-        int i2 = inetAddressByteAr[2];
-        if (i2 < 0) {
-            i2 += 256;
+        int seg2 = inetAddressByteAr[2];
+        if (seg2 < 0) {
+            seg2 += 256;
         }
-        int i3 = inetAddressByteAr[3];
-        if (i3 < 0) {
-            i3 += 256;
+        int seg3 = inetAddressByteAr[3];
+        if (seg3 < 0) {
+            seg3 += 256;
         }
-        return (OCTET0 * i0) + (OCTET1 * i1) + (OCTET2 * i2) + i3;
+        return (OCTET0 * seg0) + (OCTET1 * seg1) + (OCTET2 * seg2) + seg3;
     }
 
     public String longToIp(long ip) {
-
-        long a = ip;
-        long r0 = a / OCTET0;
-        a -= (r0 * OCTET0);
-        long r1 = a / OCTET1;
-        a -= (r1 * OCTET1);
-        long r2 = a / OCTET2;
-        a -= (r2 * OCTET2);
-        long r3 = a;
-        String ips = r0 + "." + r1 + "." + r2 + "." + r3;
+        long seg0 = ip / OCTET0;
+        ip -= (seg0 * OCTET0);
+        long seg1 = ip / OCTET1;
+        ip -= (seg1 * OCTET1);
+        long seg = ip / OCTET2;
+        ip -= (seg * OCTET2);
+        long seg3 = ip;
+        String ips = seg0 + "." + seg1 + "." + seg + "." + seg3;
         return ips;
     }
 }
